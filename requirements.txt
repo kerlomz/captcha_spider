@@ -1,0 +1,8 @@
+requests[socks]
+pillow
+pyyaml
+parsel
+opencv-python
+pyinstaller
+baidu-aip
+muggle-ocr

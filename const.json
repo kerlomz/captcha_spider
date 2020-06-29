@@ -1,0 +1,12 @@
+{
+  "baidu":  {
+    "app_id":  "app_id",
+    "api_key": "api_key",
+    "secret_key": "secret_key"
+  },
+  "lianzhong": {
+    "username": "username",
+    "password": "password"
+  },
+  "target_dir": "D:/Samples"
+}
