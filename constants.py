@@ -28,7 +28,7 @@ class ConstAPI:
 
 @unique
 class ServiceType(Enum):
-    MuggleOCR = 'Local19952'
+    MuggleOCR = 'MuggleOCR'
     BaiduOCR = 'BaiduOCR'
     LianZhong = 'LianZhong'
 

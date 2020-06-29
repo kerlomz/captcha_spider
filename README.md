@@ -7,9 +7,10 @@
 3. 校验请求, 通过官网判定验证码是否正确
 
 通过继承 Project 类实现具体的流程 ```utils.Project```
-```def before_process()-> dict```, 返回其他流程需要的参数字典, 通过 ```self.before_params``` 访问
-```def captcha_process() -> Tuple[bytes, str]```, 返回验证码图片bytes和识别后的内容
-```def feedback_process() -> bool```, 返回验证码反馈情况，是否正确
+
+1. ```def before_process()-> dict```, 返回其他流程需要的参数字典, 通过 ```self.before_params``` 访问
+2. ```def captcha_process() -> Tuple[bytes, str]```, 返回验证码图片bytes和识别后的内容
+3. ```def feedback_process() -> bool```, 返回验证码反馈情况，是否正确
 
 
 在 const.json 文件中补充自己的 **联众账号** 和 **百度API** 以及样本**保存的路径**
