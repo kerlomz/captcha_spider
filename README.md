@@ -13,6 +13,19 @@
 3. ```def feedback_process() -> bool```, 返回验证码反馈情况，是否正确
 
 
+若非常信任验证码识别效果不准备做验证步骤可以按如下方式实现：
+````python
+from utils import Project, ServiceType, Charset
+project = Project(
+    captcha_length=4,
+    captcha_charset=Charset.ALPHABET,
+    service_type=ServiceType.Kerlomz,
+    captcha_url="https://en.exmail.qq.com/cgi-bin/getverifyimage"
+)
+project.start(1000)
+````
+
+
 在 const.json 文件中补充自己的 **联众账号** 和 **百度API** 以及样本**保存的路径**
 ```json
 {
