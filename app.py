@@ -14,3 +14,12 @@ if __name__ == '__main__':
         }
     )
     project.start(num=100000)
+
+    # from utils import Project, ServiceType, Charset
+    # project = Project(
+    #     captcha_length=4,
+    #     captcha_charset=Charset.ALPHABET,
+    #     service_type=ServiceType.Kerlomz,
+    #     captcha_url="https://en.exmail.qq.com/cgi-bin/getverifyimage"
+    # )
+    # project.start(1000)

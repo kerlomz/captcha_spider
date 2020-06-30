@@ -41,8 +41,8 @@ class BaiduOCR(object):
 
 
 class LianZhong(object):
-    def __init__(self, captcha_type):
-        self.captcha_type = captcha_type
+    def __init__(self, platform_type):
+        self.platform_type = platform_type
         self._url = 'http://v1-http-api.jsdama.com/api.php?mod=php&act=upload'
         self._report_url = "http://v1-http-api.jsdama.com/api.php?mod=php&act=error"
         self.username = ConstAPI.LianZhong.username
@@ -70,7 +70,7 @@ class LianZhong(object):
             'user_pw': self.password,
             'yzm_minlen': '1',
             'yzm_maxlen': '6',
-            'yzmtype_mark': self.captcha_type,
+            'yzmtype_mark': self.platform_type,
             'zztool_token': ''
         }
         try:
@@ -93,12 +93,12 @@ class LianZhong(object):
 
 
 class GetCaptchaText(object):
-    def __init__(self, service_type: ServiceType, captcha_type=None):
-        self.captcha_type = captcha_type
+    def __init__(self, service_type: ServiceType, platform_type=None):
+        self.platform_type = platform_type
         self.service_type = service_type
 
         if self.service_type == ServiceType.LianZhong:
-            self.api = LianZhong(self.captcha_type)
+            self.api = LianZhong(self.platform_type)
         elif self.service_type == ServiceType.BaiduOCR:
             self.api = BaiduOCR()
         elif self.service_type == ServiceType.MuggleOCR:

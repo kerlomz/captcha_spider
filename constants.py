@@ -34,6 +34,16 @@ class ServiceType(Enum):
 
 
 @unique
+class Charset(Enum):
+    ALPHANUMERIC = 'ALPHANUMERIC'
+    ALPHABET = 'ALPHABET'
+    NUMERIC = 'NUMERIC'
+    ARITHMETIC = 'ARITHMETIC'
+    CHINESE = 'CHINESE'
+    DOCUMENT_OCR = 'DOCUMENT_OCR'
+    UNDEFINED = 'UNDEFINED'
+
+@unique
 class ProxyType(Enum):
     none = 'none'
     customize = 'customize'
