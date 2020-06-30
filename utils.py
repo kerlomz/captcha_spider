@@ -108,7 +108,7 @@ class Project(object):
     def before_process(self) -> dict:
         pass
 
-    def captcha_process(self) -> Tuple[bytes, str]:
+    def captcha_process(self) -> bytes:
         pass
 
     def feedback_process(self, captcha_text: str) -> bool:
@@ -126,11 +126,15 @@ class Project(object):
             return
         try:
             captcha_bytes, captcha_text = self.captcha_process()
+            captcha_text = self.platform.request(captcha_bytes)
             if b'<!DOCTYPE html>' in captcha_bytes:
                 print('ERROR[CAPTCHA-PROCESS]: CAPTCHA BYTES ERROR [{}]'.format(captcha_bytes[0: 20]))
                 return
-            if not captcha_text:
+            if captcha_text is None:
                 print('ERROR[CAPTCHA-PROCESS]: CAPTCHA TEXT IS NONE')
+                return
+            if captcha_text == "":
+                print('ERROR[CAPTCHA-PROCESS]: CAPTCHA TEXT IS BLANK')
                 return
         except Exception as e:
             print('ERROR[CAPTCHA-PROCESS]: {}'.format(e))

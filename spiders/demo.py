@@ -50,7 +50,7 @@ class Baidu(Project):
             print(resp_json)
             return {}
 
-    def captcha_process(self) -> Tuple[bytes, str]:
+    def captcha_process(self) -> bytes:
         """
         :return: 返回两个参数：验证码bytes内容, 返回验证码标签
         """
@@ -59,9 +59,7 @@ class Baidu(Project):
         captcha_bytes = self.session.get(
             self.captcha_url + "?{}".format(self.before_params['captcha_vcode_str'])
         ).content
-
-        captcha_text = self.platform.request(captcha_bytes)
-        return captcha_bytes, captcha_text
+        return captcha_bytes
 
     def feedback_process(self, captcha_text: str) -> bool:
         """

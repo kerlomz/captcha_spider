@@ -35,7 +35,8 @@ class BaiduOCR(object):
         if 'error_code' in result:
             return result['error_msg']
         words_results = result.get("words_result")
-
+        if not words_results:
+            return ""
         return words_results[0].get('words')
 
 
