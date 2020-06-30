@@ -9,7 +9,7 @@
 通过继承 Project 类实现具体的流程 ```utils.Project```
 
 1. ```def before_process()-> dict```, 返回其他流程需要的参数字典, 通过 ```self.before_params``` 访问
-2. ```def captcha_process() -> Tuple[bytes, str]```, 返回验证码图片bytes和识别后的内容
+2. ```def captcha_process() -> bytes```, 返回验证码图片bytes
 3. ```def feedback_process() -> bool```, 返回验证码反馈情况，是否正确
 
 
