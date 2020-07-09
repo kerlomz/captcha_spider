@@ -16,6 +16,7 @@ from urllib.parse import urlparse
 from parsel import Selector
 from fake_useragent import UserAgent
 from service import GetCaptchaText
+from middleware.gif_frames import blend_frame
 
 ua = UserAgent()
 
@@ -58,6 +59,7 @@ class Project(object):
             captcha_charset: Charset = Charset.UNDEFINED,
             platform_type: str = None,
     ):
+        self.need_identify = True
         if captcha_length is None:
             captcha_length = [1, 18]
         if isinstance(captcha_length, list):
@@ -98,6 +100,47 @@ class Project(object):
             if not ('\u4e00' <= ch <= '\u9fff'):
                 return False
         return True
+
+    @staticmethod
+    def test_image(h):
+        if not h:
+            return None
+        """JPEG"""
+        if h[:3] == b"\xff\xd8\xff":
+            return 'jpeg'
+        """PNG"""
+        if h[:8] == b"\211PNG\r\n\032\n":
+            return 'png'
+        """GIF ('87 and '89 variants)"""
+        if h[:6] in (b'GIF87a', b'GIF89a'):
+            return 'gif'
+        """TIFF (can be in Motorola or Intel byte order)"""
+        if h[:2] in (b'MM', b'II'):
+            return 'tiff'
+        if h[:2] == b'BM':
+            return 'bmp'
+        """SGI image library"""
+        if h[:2] == b'\001\332':
+            return 'rgb'
+        """PBM (portable bitmap)"""
+        if len(h) >= 3 and \
+                h[0] == b'P' and h[1] in b'14' and h[2] in b' \t\n\r':
+            return 'pbm'
+        """PGM (portable graymap)"""
+        if len(h) >= 3 and \
+                h[0] == b'P' and h[1] in b'25' and h[2] in b' \t\n\r':
+            return 'pgm'
+        """PPM (portable pixmap)"""
+        if len(h) >= 3 and h[0] == b'P' and h[1] in b'36' and h[2] in b' \t\n\r':
+            return 'ppm'
+        """Sun raster file"""
+        if h[:4] == b'\x59\xA6\x6A\x95':
+            return 'rast'
+        """X bitmap (X10 or X11)"""
+        s = b'#define '
+        if h[:len(s)] == s:
+            return 'xbm'
+        return None
 
     def validate(self, text: str) -> Tuple[bool, str]:
         if not text:
@@ -194,6 +237,8 @@ class Project(object):
         except Exception as e:
             print('ERROR[BEFORE-PROCESS]: {}'.format(e))
             return
+        if self.before_params is None:
+            self.before_params = {}
         try:
             captcha_bytes = self.captcha_process()
             if captcha_bytes is None and not self._captcha_url:
@@ -203,7 +248,12 @@ class Project(object):
                 return
             if captcha_bytes is None and self._captcha_url:
                 captcha_bytes = self.session.get(self._captcha_url).content
-            captcha_text = self.platform.request(captcha_bytes)
+            if self.test_image(captcha_bytes) == 'gif':
+                captcha_bytes = blend_frame(image_obj=captcha_bytes)
+            if self.need_identify:
+                captcha_text = self.platform.request(captcha_bytes)
+            else:
+                captcha_text = "default"
             if b'<!DOCTYPE html>' in captcha_bytes:
                 print('ERROR[CAPTCHA-PROCESS]: CAPTCHA BYTES ERROR [{}]'.format(captcha_bytes[0: 20]))
                 return
@@ -218,6 +268,8 @@ class Project(object):
             print('ERROR[CAPTCHA-PROCESS]: {}'.format(e))
             return
         captcha_assert, assert_msg = self.validate(captcha_text)
+        if not self.need_identify:
+            captcha_assert = True
         if not captcha_assert:
             print('ERROR[VALIDATE-PROCESS]: {}'.format(assert_msg))
             return
